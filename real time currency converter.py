@@ -15,8 +15,12 @@ def clear():
 
 def real_time_currency_conversion():
     # currency code
-    from_currency = combo1.get()
-    to_currency = combo2.get()
+    if box1.grid_info()['column'] == 0:
+        from_currency = combo1.get()
+        to_currency = combo2.get()
+    else:
+        from_currency = combo2.get()
+        to_currency = combo1.get()
     pair = from_currency + to_currency
 
     if pair not in cur_pairs:
@@ -34,6 +38,14 @@ def real_time_currency_conversion():
         return exchange_rate
 
 
+def swap():
+    col1 = box1.grid_info()['column']
+    col2 = box2.grid_info()['column']
+    box1.grid(column=col2)
+    box2.grid(column=col1)
+    box1.delete(0, 'end')
+
+
 cur_pairs = {}
 currencies = ['USD', 'TWD', 'EUR', 'GBP', 'CAD', 'CNY', 'JPY', 'CHF', 'HKD', 'MYR', 'NZD', 'RUB', 'KRW']
 win = tk.Tk()
@@ -42,20 +54,20 @@ value1 = tk.DoubleVar()
 value2 = tk.DoubleVar()
 btn_conv = tk.Button(win, text='convert', command=convert_currency, font='Arial',fg='green')
 tk.Button(win, text='clear', command=clear, font='Arial').grid(row=0, column=1)
+tk.Button(win, text='swap', command=swap, font='Arial').grid(row=0, column=2)
 box1 = tk.Entry(win, textvariable=value1, width=20, font=('Helvetica', 15), justify='right')
 box2 = tk.Entry(win, textvariable=value2, width=20, font=('Helvetica', 15), justify='right')
 combo1 = ttk.Combobox(win, values=currencies, width=5, font=('Arial', 12))
 combo2 = ttk.Combobox(win, values=currencies, width=5, font=('Arial', 12))
 combo1.grid(row=0, column=0)
-combo2.grid(row=0, column=2)
+combo2.grid(row=0, column=3)
 box1.grid(row=1, column=0)
-box2.grid(row=1, column=2)
-btn_conv.grid(row=1, column=1)
+box2.grid(row=1, column=3)
+btn_conv.grid(row=1, column=1,columnspan=2)
 combo1.set(value='USD')
 combo2.set(value='TWD')
 box2.config(state='disabled')
 box1.bind('<Return>',convert_currency)
-box2.bind('<Return>',convert_currency)
 clear()
 
 win.mainloop()
